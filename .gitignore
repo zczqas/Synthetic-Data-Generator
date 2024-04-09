@@ -1,0 +1,10 @@
+.venv
+venv
+.vscode
+.idea
+media
+alembic/versions/*
+__pycache__/
+*.pyc
+*.csv
+.env-sai

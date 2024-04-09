@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+    container_name: sai-web
+    ports:
+      - "${WEB_PORT}:${WEB_PORT}"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    networks:
+      - sai-networks
+
+  db:
+    image: postgres:15-alpine
+    container_name: sai_host
+    volumes:
+      - sai_postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
+    networks:
+      - sai-networks
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: sai-pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "${PG_ADMIN_EXPOSE_PORT}:${PG_ADMIN_DOCKER_PORT}"
+    depends_on:
+      - db
+    networks:
+      - sai-networks
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: sai_mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - sai-networks
+
+volumes:
+  sai_postgres_data:
+
+networks:
+  sai-networks:
+    driver: bridge

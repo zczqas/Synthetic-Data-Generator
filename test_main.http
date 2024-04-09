@@ -1,0 +1,22 @@
+GET http://127.0.0.1:8000/
+Accept: application/json
+
+###
+
+POST http://127.0.0.1:8000/apiv1/auth/login
+Accept: application/x-www-form-urlencoded
+Content-Type: application/x-www-form-urlencoded
+
+username=test@test.com&password=pass
+
+###
+
+GET http://127.0.0.1:8000/apiv1/user/get
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/apiv1/user/get/1
+Accept: application/json
+
+###
