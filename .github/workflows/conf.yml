@@ -17,7 +17,7 @@ jobs:
         export PATH=/usr/local/bin:$PATH
         git pull
         docker-compose down
-        docker-compose up --build -d"
+        docker-compose up --build -d
 
     - name: Docker system Prune
       if: success()
