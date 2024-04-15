@@ -1,5 +1,7 @@
 import csv
 from io import StringIO
+import uuid
+
 from fastapi import (
     APIRouter,
     HTTPException,
@@ -9,11 +11,17 @@ from fastapi import (
     status,
     Form,
 )
+from fastapi.responses import FileResponse
+
 import anthropic
 
-from apps.apis.v1.data.prompt import generation_prompt, timeseries_prompt
-from apps.config.settings import API_KEY
+from apps.apis.v1.data.prompt import GENERATION_PROMPT, TIMESERIES_PROMPT
+from apps.config.settings import API_KEY, GENERATED_MEDIA_PATH
 from apps.apis.v1.data.helpers import (
+    generate_synthetic_data,
+    generate_additional_rows,
+    create_csv_file,
+    evaluate_and_fix_csv,
     infer_data_type,
     parse_and_validate_row,
     ensure_uniqueness,
@@ -43,9 +51,9 @@ async def generate_data(
             batch_num_rows = min(remaining_rows, batch_size)
 
             if data_type == "timeseries":
-                prompt = timeseries_prompt
+                prompt = TIMESERIES_PROMPT
             else:
-                prompt = generation_prompt
+                prompt = GENERATION_PROMPT
 
             batch_prompt = prompt.format(num_rows=batch_num_rows)
 
@@ -123,4 +131,47 @@ async def generate_data(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred while generating synthetic data: {e}"
+        ) from e
+
+@router.post("/generate/new")
+async def generate_data_new(
+    file: UploadFile = File(...), # Please provide the example data in CSV format
+    data_type: str = Form(...), # Enter the type of data to generate (regular/timeseries):
+    num_rows: int = Form(...), # Enter the desired number of rows to generate
+    batch_size: int = Form(200), # Enter the batch size for LLM calls (default: 200):
+):
+    try:
+        example_data_content = await file.read()
+        example_data_str = example_data_content.decode('utf-8')
+
+        rows_per_call = 50
+        num_calls = (num_rows + rows_per_call - 1) // rows_per_call
+        batch_size = (num_rows + num_calls - 1) // num_calls
+
+        print(f"Generating {num_rows} rows in {num_calls} LLM calls with batch size of {batch_size}")
+
+        generated_data, num_generated_rows = generate_synthetic_data(example_data=example_data_str, num_rows=num_rows, data_type=data_type, batch_size=batch_size)
+
+        while num_generated_rows < num_rows:
+            print(f"Generated {num_generated_rows} rows, less than the requested {num_rows}. Making additional LLM calls")
+            generated_data = generate_additional_rows(example_data=example_data_str, num_rows=num_rows, data_type=data_type, batch_size=batch_size, existing_data=generated_data)
+            num_generated_rows = len(generated_data)
+
+        generated_data_file_id = uuid.uuid4()
+        generated_data_file = f"{GENERATED_MEDIA_PATH}/generated_data_{generated_data_file_id}.csv"
+
+        fixed_data_file_id = uuid.uuid4()
+        fixed_data_file = f"{GENERATED_MEDIA_PATH}/fixed_data_{fixed_data_file_id}.csv"
+
+        create_csv_file(generated_data, generated_data_file)
+        print("Synthetic data generated and saved")
+
+        evaluate_and_fix_csv(generated_data_file, fixed_data_file, data_type)
+        print("CSV file evaluated and fixed")
+
+        return FileResponse(fixed_data_file, media_type="text/csv", filename=fixed_data_file)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error generating synthetic data: {str(e)}"
         ) from e

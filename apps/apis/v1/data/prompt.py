@@ -1,4 +1,4 @@
-generation_prompt = """
+GENERATION_PROMPT = """
 Please generate {num_rows} rows of realistic-looking data that follow the same pattern, data types, and value ranges as the example provided. The data should be similar in nature to the example, but not identical, containing a variety of plausible values for each field.
 
 When generating the synthetic data, please keep the following in mind:
@@ -16,7 +16,7 @@ When generating the synthetic data, please keep the following in mind:
 Please provide only the resulting synthetic dataset in a tabular format CSV, without any additional conversational text or explanations.
 """
 
-timeseries_prompt = """
+TIMESERIES_PROMPT = """
 Please generate {num_rows} rows of realistic-looking time-series data that follow the same pattern, data types, and value ranges as the example provided. The data should be similar in nature to the example, but not identical, containing a variety of plausible values for each field.
 
 When generating the synthetic time-series data, please keep the following in mind:

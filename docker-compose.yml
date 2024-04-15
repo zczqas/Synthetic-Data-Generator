@@ -41,14 +41,14 @@ services:
     networks:
       - sai-networks
 
-  mailhog:
-    image: mailhog/mailhog
-    container_name: sai_mailhog
-    ports:
-      - "1025:1025"
-      - "8025:8025"
-    networks:
-      - sai-networks
+  # mailhog:
+  #   image: mailhog/mailhog
+  #   container_name: sai_mailhog
+  #   ports:
+  #     - "1025:1025"
+  #     - "8025:8025"
+  #   networks:
+  #     - sai-networks
 
 volumes:
   sai_postgres_data:
