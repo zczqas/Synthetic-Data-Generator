@@ -8,6 +8,8 @@ from fastapi.staticfiles import StaticFiles
 from apps.config import settings
 
 from apps.apis.v1.data.routes import router as data_router
+from apps.apis.v1.csv.routes import router as csv_router
+
 
 def get_application() -> FastAPI:
     app = FastAPI(
@@ -40,6 +42,7 @@ def get_application() -> FastAPI:
 
 app = get_application()
 app.include_router(data_router, prefix="/api/v1")
+app.include_router(csv_router, prefix="/api/v1")
 
 
 @app.get("/")

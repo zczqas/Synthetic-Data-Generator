@@ -48,3 +48,4 @@ watchfiles
 websockets
 fastapi_mail
 anthropic
+mech_client

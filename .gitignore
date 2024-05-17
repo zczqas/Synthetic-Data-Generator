@@ -8,4 +8,6 @@ __pycache__/
 *.pyc
 *.csv
 .env-sai
+.env
 generated_media/*
+ethereum_private_key.txt

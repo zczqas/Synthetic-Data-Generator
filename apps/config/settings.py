@@ -1,6 +1,5 @@
 import os
 
-
 from starlette.config import Config
 from starlette.datastructures import (
     Secret,
@@ -68,3 +67,4 @@ SERVER_URL: str = config("SERVER_URL", default="http://localhost:8000")
 OTP_LENGTH: int = config("OTP_LENGTH", cast=int, default=4)
 API_KEY: str = config("ANTHROPIC_API_KEY", default="")
 GENERATED_MEDIA_PATH: str = config("GENERATED_MEDIA_PATH", default="generated_media")
+GENERATED_CSV_PATH: str = config("GENERATED_CSV_PATH", default="generated_csv")
