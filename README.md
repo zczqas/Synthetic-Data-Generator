@@ -5,3 +5,4 @@
 - Python
 - FastAPI
 - PostgreSQL
+- Github Actions
