@@ -73,7 +73,7 @@ Configuration settings are managed in the `.env` file. Key settings include:
 ## Running Tests
 
 You can use the [test_main.http]file to test the API endpoints using an HTTP client like [HTTPie](https://httpie.io/) or [Postman](https://www.postman.com/).
-You can also use in-built swagger UI to teat the API endpoints.
+You can also use in-built swagger UI to test the API endpoints.
 
 ## Contributing
 
