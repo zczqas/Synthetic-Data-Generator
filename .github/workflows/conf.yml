@@ -1,24 +1,24 @@
-name: Push to ECR
+# name: Push to ECR
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-jobs:
-  build-and-push:
-    runs-on: self-hosted
+# jobs:
+#   build-and-push:
+#     runs-on: self-hosted
 
-    steps:
-    - name: Pull Latest Changes
-      run: |
-        pwd
-        cd ~/sai
-        export PATH=/usr/local/bin:$PATH
-        git pull
-        docker-compose down
-        docker-compose up --build -d
+#     steps:
+#     - name: Pull Latest Changes
+#       run: |
+#         pwd
+#         cd ~/sai
+#         export PATH=/usr/local/bin:$PATH
+#         git pull
+#         docker-compose down
+#         docker-compose up --build -d
 
-    - name: Docker system Prune
-      if: success()
-      run: docker system prune -f
+#     - name: Docker system Prune
+#       if: success()
+#       run: docker system prune -f
